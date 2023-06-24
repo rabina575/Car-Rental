@@ -1,0 +1,97 @@
+﻿@using HajurKoCarRental.Utils;
+@model HajurKoCarRental.Models.User
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h4>Edit User</h4>
+<hr />
+<div class="container edit-user-container">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Address" class="control-label"></label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email" class="control-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Password" class="control-label"></label>
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Phone" class="control-label"></label>
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                        @{
+                            if (Utils.user.Status != DocumentStatus.VERIFIED)
+                            {
+                                <div class="form-group">
+                                    <label for="Document">Choose file (only .png or .pdf)</label>
+                                    <input type="file" name="Document" id="Document" class="form-control-file" accept=".png,.pdf">
+                                </div>
+                            }
+                        }
+                        <div class="form-group mt-2">
+                            <input type="hidden" name="RequestVerificationToken" value="@Html.AntiForgeryToken()" />
+                            <input type="submit" value="Edit" class="btn btn-primary me-2" />
+                            @{
+                                if (Utils.role.Contains("Admin") || Utils.role.Contains("Staff")){
+                                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                                }
+                                else{
+                                    <a asp-action="Details" asp-route-id="@Utils.userId" class="btn btn-secondary">Back to List</a>
+                                }
+                            }
+                            
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<style>
+    .edit-user-container h1 {
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    .edit-user-container h4 {
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .edit-user-container .form-group label {
+        font-weight: bold;
+    }
+
+    .edit-user-container form {
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+</style>

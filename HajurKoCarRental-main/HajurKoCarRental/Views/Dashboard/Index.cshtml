@@ -1,0 +1,177 @@
+﻿@model HajurKoCarRental.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-md-4 col-lg-2 text-center">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Cars Count</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.CarsCount</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-2 text-center">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Offers Count</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.OffersCount</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-2 text-center">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Customers Count</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.PassengersCount </h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-2 text-center">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Active Customers</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.ActivePassengersCount</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-2 text-center">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Inactive Customers</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.InactivePassengersCount</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-2 text-center">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Car Requests Count</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.CarRequestsCount</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    var highestRentalCount = Model.SalesCounts.OrderByDescending(s => s.SalesCount).FirstOrDefault();
+    var lowestRentalCount = Model.SalesCounts.OrderBy(s => s.SalesCount).FirstOrDefault();
+}
+<div class="chart-data-container row">
+    <div class="container chart-container col-md-8">
+        <div class="row mt-4">
+            <div class="col">
+                <h5>Cars and Rental Counts</h5>
+                <div class="chart-container" style="position: relative; width: 100%; height: 300px;">
+                    <canvas id="carRentalChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="min-max-data-container col-md-4">
+        <h5>Highest and Lowest Rentals</h5>
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Car Name</th>
+                    <th>Rental Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@highestRentalCount.CarName</td>
+                    <td>@highestRentalCount.SalesCount</td>
+                </tr>
+                <tr>
+                    <td>@lowestRentalCount.CarName</td>
+                    <td>@lowestRentalCount.SalesCount</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<div class="container">
+    <div class="row mt-4">
+        <h5>Last Five Rental Data</h5>
+        <div class="col">
+            <table class="table table-striped table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Car Name</th>
+                        <th>Duration</th>
+                        <th>Approval By</th>
+                        <th>Requested Date</th>
+                        <th>Returned Date</th>
+                        <th>Total Amount</th>
+                        <th>Paid Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var sortedCarRequests = Model.CarRequests.OrderByDescending(item => item.CreatedAt).Take(5);
+                    }
+                    @foreach (var item in sortedCarRequests)
+                    {
+                        <tr>
+                            <td>@item.Car.Name</td>
+                            <td>@item.duration</td>
+                            <td>@item.ApprovalUser?.Name</td>
+                            <td>@item.requestedDate.ToString("d MMM, yyyy h:mm tt")</td>
+                            <td>
+                                @item.returnedDate
+                            </td>
+                            <td>@item.totalAmount</td>
+                            <td>@(item.isPaid ? "Yes" : "No")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Prepare data for the chart
+        var carNames = @Html.Raw(Json.Serialize(Model.SalesCounts.Select(x => x.CarName)));
+        var salesCounts = @Html.Raw(Json.Serialize(Model.SalesCounts.Select(x => x.SalesCount)));
+
+        // Create the chart
+        var ctx = document.getElementById('carRentalChart').getContext('2d');
+        var carRentalChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: carNames,
+                datasets: [{
+                    label: 'Rental Count',
+                    data: salesCounts,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        align: 'start'
+                    }
+                },
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+}

@@ -1,0 +1,95 @@
+﻿@model HajurKoCarRental.Models.User
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4>Add New User</h4>
+<hr />
+<div class="create-user-container row">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="fileInput">Choose file (only .png or .pdf, max 1.5 MB)</label>
+                <input type="file" name="fileInput" id="fileInput" class="form-control-file" accept=".png,.pdf" onchange="validateFileSize(this)">
+            </div>
+            <div class="form-group mt-2">
+                <input type="hidden" name="RequestVerificationToken" value="@Html.AntiForgeryToken()" />
+
+                <input type="submit" value="Create" class="btn btn-primary me-2" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
+
+<style>
+    h1 {
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    h4 {
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        font-weight: bold;
+    }
+
+    form {
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<script>
+    function validateFileSize(input) {
+        if (input.files && input.files[0]) {
+            if (input.files[0].size > 1572864) { // 1.5 MB in bytes
+                alert('The file size must not exceed 1.5 MB.');
+                input.value = '';
+            }
+        }
+    }
+</script>

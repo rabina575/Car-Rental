@@ -1,0 +1,44 @@
+﻿@model IEnumerable<HajurKoCarRental.Models.Offer>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-center">Offers</h1>
+
+@{
+    if (User.IsInRole("Staff") || User.IsInRole("Admin"))
+    {
+        <p class="text-center">
+            <a asp-action="Create" class="btn btn-primary">Create New Offer</a>
+        </p>
+    }
+    }
+
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card offer-card">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@Html.DisplayFor(modelItem => item.Car.Name)</h6>
+                        <p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
+                        <p class="card-text"><strong>Discount:</strong> @Html.DisplayFor(modelItem => item.Discount)%</p>
+                        <p class="card-text"><strong>Expires:</strong> @item.ExpiresAt.ToString("d MMM, yyyy h:mm tt")</p>
+                        @{
+                            if (User.IsInRole("Staff") || User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                            }
+                        }
+                            
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

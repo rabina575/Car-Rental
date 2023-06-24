@@ -1,0 +1,91 @@
+﻿@using HajurKoCarRental.Utils;
+@using System.Diagnostics;
+@model IEnumerable<HajurKoCarRental.Models.Car>
+@using Microsoft.AspNetCore.Authorization;
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Car Inventory</h1>
+
+@if (User.IsInRole("Staff") || User.IsInRole("Admin"))
+{
+    <div class="create-container mx-auto">
+        <a class="btn btn-primary" asp-action="Create"> <i class="bi bi-plus-circle"></i> Create New</a>
+    </div>
+}
+
+<div class="container mx-auto">
+    <div class="row car-card-container mx-auto">
+        @foreach (var item in Model)
+        {
+            var rating = 0.0F;
+            foreach (var kvp in Utils.ratings)
+            {
+                var car = kvp.Key;
+                if (item.Id == car.Id)
+                {
+                    if (kvp.Value != null)
+                    {
+                        rating = (float) kvp.Value;
+                    }
+                    break;
+                }
+            }
+
+            var frequency = 0;
+            foreach (var kvp in Utils.frequency)
+            {
+                var car = kvp.Key;
+                if (item.Id == car.Id)
+                {
+                    frequency = kvp.Value;
+                    break;
+                }
+            }
+
+            @*var available = true;
+            foreach (var kvp in Utils.availability)
+            {
+                var car = kvp.Key;
+                if (item.Id == car.Id)
+                {
+                    available = (bool)kvp.Value;
+                    break;
+                }
+            }*@
+
+            <div class="car-card">
+                <div class="card mb-4">
+                    <img class="card-img-top" src="@item.Image" alt="Car image" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
+                        <p class="card-text">Rate: <i class="bi bi-currency-rupee"></i> @Html.DisplayFor(modelItem => item.Rate)</p>
+                                                  <p class="card-text">Availability: @(Utils.IsCarAvailable(item.Id) ? Html.Raw("Available <i class=\"bi bi-check-square\"></i>") : Html.Raw("Not Available <i class=\"bi bi-x-square\"></i>"))</p>
+                        <p class="card-text">
+                            Rating:
+                            @{
+                                @((rating == 0.0F) ? "0" : rating.ToString())
+                            }
+                        </p>
+                        <p class="card-text">Rented: @frequency times</p>
+                        <div class="card-button-container">
+                            @if (User.IsInRole("Staff") || User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="bi bi-info-square"></i></a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                                <a asp-action="Create" asp-route-id="@item.Id" asp-controller="CarRequests" class="btn btn-success"><i class="bi bi-bookmark-star-fill"></i></a>
+                            }
+                            @if (User.IsInRole("Customer"))
+                            {
+                                <a asp-action="Create" asp-route-id="@item.Id" asp-controller="CarRequests" class="btn btn-primary" style="width: 40%">Book</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

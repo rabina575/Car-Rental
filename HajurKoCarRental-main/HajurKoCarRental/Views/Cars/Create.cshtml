@@ -1,0 +1,63 @@
+﻿@model HajurKoCarRental.Models.Car
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1 class="text-center">Create New Inventory Item</h1>
+
+<div class="container create-car-container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group mb-2">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-2">
+                    <label asp-for="Rate" class="control-label"></label>
+                    <input asp-for="Rate" class="form-control" />
+                    <span asp-validation-for="Rate" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check mb-2" hidden>
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsAvailable" /> @Html.DisplayNameFor(model => model.IsAvailable)
+                    </label>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="fileInput">Choose file (only .png, .jpg or .jpeg, max 1.5 MB)</label>
+                    <input type="file" name="fileInput" id="fileInput" class="form-control-file" accept=".png,.jpg, .jpeg" onchange="validateFileSize(this)">
+                    <span id="fileInputError" class="text-danger d-none">File size exceeds 1.5 MB.</span>
+                </div>
+                <div class="form-group">
+                    <input type="hidden" name="RequestVerificationToken" value="@Html.AntiForgeryToken()" />
+                    <input type="submit" value="Create" class="btn btn-primary me-1" />
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function validateFileSize(input) {
+            const maxSize = 1.5 * 1024 * 1024; // 1.5 MB
+            const fileSize = input.files[0].size;
+            const errorSpan = document.getElementById('fileInputError');
+
+            if (fileSize > maxSize) {
+                input.value = ''; // Clear the file input
+                errorSpan.classList.remove('d-none'); // Show the error message
+            } else {
+                errorSpan.classList.add('d-none'); // Hide the error message
+            }
+        }
+    </script>
+}

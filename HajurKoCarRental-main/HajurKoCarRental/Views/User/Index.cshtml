@@ -1,0 +1,92 @@
+﻿@using HajurKoCarRental.Utils;
+@model IEnumerable<HajurKoCarRental.Models.User>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h1 class="text-center">All Users</h1>
+
+<div class="create-container">
+        <a asp-action="Create" class="btn btn-primary mb-3">Create New</a>
+</div>
+
+
+<!-- Filter section -->
+<form>
+    <div class="form-row">
+        <div class="col-md-6">
+            <label for="search" class="sr-only">Search by email:</label>
+            <input type="text" class="form-control mb-3" id="search" name="search" placeholder="Search by email" />
+        </div>
+    </div>
+</form>
+
+<!-- Table -->
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.Email)</th>
+            <th>@Html.DisplayNameFor(model => model.Address)</th>
+            <th>@Html.DisplayNameFor(model => model.Phone)</th>
+            <th>@Html.DisplayNameFor(model => model.Status)</th>
+            <th>Active Status</th>
+            <th>Role</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var isActive = "Active";
+            foreach (User i in Utils.inactiveUsers)
+            {
+                if (item.Id == i.Id)
+                {
+                    isActive = "Inactive";
+                    break;
+                }
+            }
+
+            var role = "Customer";
+            foreach (var kvp in Utils.allUsers)
+            {
+                var user = kvp.Key;
+                if(item.Id== user.Id)
+                {
+                    role = kvp.Value;
+                    break;
+                }
+            }
+
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                <td>@Html.DisplayFor(modelItem => item.Phone)</td>
+                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                <td>@isActive</td>
+                <td>@role</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="stylish-link">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" class="stylish-link">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="stylish-link">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#search").on("keyup", function () {
+                var searchEmail = $(this).val().toLowerCase();
+                $("table tbody tr").filter(function () {
+                    $(this).toggle($(this).find("td:eq(1)").text().toLowerCase().indexOf(searchEmail) > -1);
+                });
+            });
+        });
+    </script>
+}

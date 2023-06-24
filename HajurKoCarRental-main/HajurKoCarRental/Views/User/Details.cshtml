@@ -1,0 +1,138 @@
+﻿@using HajurKoCarRental.Utils;
+@model HajurKoCarRental.Models.User
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="mb-2"></div>
+
+<div class="card">
+    <div class="card-header">
+        <h4>User Details</h4>
+    </div>
+    <div class="card-body">
+        <!-- The rest of the details -->
+        <dl class="row">
+            <dt class="col-sm-2 font-weight-bold">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                @Html.DisplayNameFor(model => model.Password)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Password)
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                @Html.DisplayNameFor(model => model.Address)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Address)
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                @Html.DisplayNameFor(model => model.Phone)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Phone)
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CreatedAt)
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                @Html.DisplayNameFor(model => model.Document)
+            </dt>
+            <dd class="col-sm-10">
+                <button type="button" class="btn btn-info" id="viewDocumentBtn">
+                    View Document
+                </button>
+            </dd>
+
+        </dl>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary mr-2">Edit</a>
+    @if(User.IsInRole("Staff") || User.IsInRole("Admin")){
+        <a asp-action="Index" class="btn btn-secondary mr-2">Back to List</a>
+        if (Model.Status == DocumentStatus.PENDING)
+        {
+            <a asp-action="ChangeDocumentStatus" asp-route-id="@Model.Id" asp-route-status="VERIFIED" class="btn btn-success mr-2">Approve Documents</a>
+            <a asp-action="ChangeDocumentStatus" asp-route-id="@Model.Id" asp-route-status="NOTVERIFIED" class="btn btn-danger">Reject Documents</a>
+        }
+    }
+    <a class="btn btn-warning" href="/Identity/Account/Manage/ChangePassword">Change Password</a>
+</div>
+
+<!-- Modal -->
+<!-- Modal -->
+<div class="modal fade" id="documentModal" tabindex="-1" aria-labelledby="documentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="documentModalLabel">User Document</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img id="userDocumentImage" src="" class="img-fluid d-none" alt="User Document">
+                <embed id="userDocumentPDF" src="" type="application/pdf" class="d-none" style="width: 100%; height: 500px;">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const viewDocumentBtn = document.getElementById('viewDocumentBtn');
+            const userDocumentImage = document.getElementById('userDocumentImage');
+            const userDocumentPDF = document.getElementById('userDocumentPDF');
+            const documentModal = new bootstrap.Modal(document.getElementById('documentModal'), {});
+
+            viewDocumentBtn.addEventListener('click', function () {
+                const documentUrl = '@Model.Document';
+
+                if (documentUrl.includes('.pdf')) {
+                    userDocumentPDF.src = documentUrl;
+                    userDocumentPDF.classList.remove('d-none');
+                    userDocumentImage.classList.add('d-none');
+                } else {
+                    userDocumentImage.src = documentUrl;
+                    userDocumentImage.onerror = function () {
+                        alert('Error loading the image. Please make sure the image URL is correct and accessible.');
+                    };
+                    userDocumentImage.classList.remove('d-none');
+                    userDocumentPDF.classList.add('d-none');
+                }
+
+                documentModal.show();
+            });
+        });
+    </script>
+}
+
+    @section Styles {
+    <style>
+        .modal-dialog {
+            max-width: 80%; /* Change this value to adjust the modal width */
+        }
+
+        .modal-body img {
+            max-width: 100%;
+            max-height: 500px; /* Change this value to adjust the modal height */
+        }
+    </style>
+}

@@ -1,0 +1,166 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@inject UserManager<User> userManager
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HajurKoCarRental</title>
+    <link rel="stylesheet" href="~/css/bootswatchTheme.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/CustomDesign.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/HajurKoCarRental.styles.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <header>
+        <nav class="navigation-bar navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand text-light" asp-area="" asp-controller="Home" asp-action="Index">HajurKoCarRental</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                            <!-- Navigation items for logged-in users -->
+                            @if (User.IsInRole("Staff") || User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="Cars" asp-action="Index">Cars</a>
+                            </li>
+                            @if (User.IsInRole("Staff") || User.IsInRole("Admin"))
+                                {
+                                    <li class="nav-item">
+                                    <a class="nav-link text-light" asp-area="" asp-controller="User" asp-action="Index">Users</a>
+                                    </li>
+                                }
+                            
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="CarRequests" asp-action="Index">Requests</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="Offers" asp-action="Index">Offers</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="Damages" asp-action="Index">Damages</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" href="/User/Details/@userId">Manage Profile</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" id="notification-icon"><i class="bi bi-bell-fill" asp-controller="Notifications"></i></a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <partial name="_LoginPartial" />
+        </nav>
+    </header>
+    <div class="container">
+        <!-- Container for notification list partial view -->
+        <div id="notification-list-container">
+            <!-- The partial view will be loaded here -->
+        </div>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - HajurKoCarRental
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            $("#notification-icon").on('click', function (e) {
+                e.preventDefault();
+                var container = $("#notification-list-container");
+                if (container.is(":visible")) {
+                    container.hide();
+                } else {
+                    container.load("/Notifications/Index");
+                    container.show();
+                }
+            });
+        });
+    </script>
+    <script>
+        function deleteNotification(id, event) {
+            var form = document.getElementById("delete-notification-form-" + id);
+            var formData = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                body: formData
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Remove the deleted notification from the DOM with an animation
+                        var card = form.closest('.card');
+                        card.classList.add('swipe-out');
+                        setTimeout(function () {
+                            card.remove();
+                        }, 500);
+                    } else {
+                        throw new Error("Error deleting notification");
+                    }
+                })
+                .catch(error => {
+                    alert(error.message);
+                });
+
+            event.preventDefault(); // Prevent the form from being submitted
+        }
+
+    </script>
+
+    <script>
+        $(function () {
+            $('#manage-profile-link').click(function (e) {
+                console.log("jksrfejghehigeighehri")
+                e.preventDefault(); // prevent the default action of clicking the link
+
+                var username = "@User.Identity.Name";
+
+                $.ajax({
+                    url: "/Account/GetUserId",
+                    type: "POST",
+                    data: { "username": username },
+                    success: function (response) {
+                        var userId = response;
+                        window.location.href = "/Users/Details/" + userId; // navigate to the Details action method of the UsersController
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

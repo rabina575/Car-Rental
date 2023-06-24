@@ -1,0 +1,46 @@
+﻿@model HajurKoCarRental.Models.Offer
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1 class="text-center">Offer Details</h1>
+
+<div class="container">
+    <div class="d-flex flex-wrap justify-content-center align-items-start mt-3 mb-3">
+        <div class="me-4">
+            <img src="@Html.DisplayFor(model => model.Car.Image)" class="img-fluid" alt="Car image" style="max-width: 300px; border: 1px solid grey; border-radius: 8px" />
+        </div>
+        <div class="card bg-light mb-3" style="flex: 1;">
+            <div class="card-body">
+                <h4 class="card-title">@Html.DisplayFor(model => model.Name)</h4>
+                <p class="card-text">@Html.DisplayFor(model => model.Description)</p>
+                <hr>
+                <dl class="row">
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.Discount)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.Discount)
+                    </dd>
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.CreatedAt)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Model.CreatedAt.ToString("d MMM, yyyy h:mm tt")
+                    </dd>
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.ExpiresAt)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Model.ExpiresAt.ToString("d MMM, yyyy h:mm tt")
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary me-1">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>

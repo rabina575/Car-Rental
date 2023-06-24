@@ -1,0 +1,29 @@
+﻿@model IEnumerable<HajurKoCarRental.Models.Notification>
+
+<div class="notification-box" style="border: 1px solid #ccc; border-radius: 5px; background-color: #f8f9fa; padding: 20px;">
+    @if (!Model.Any())
+    {
+        <p>No notifications were found.</p>
+    }
+    else
+    {
+        <div class="card-columns">
+            @foreach (var item in Model)
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title font-weight-bold">@Html.DisplayFor(modelItem => item.Title)</h5>
+                        <p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
+                        <div class="d-flex">
+                            <form id="delete-notification-form-@item.Id" method="post" action="@Url.Action("Delete", "Notifications", new { id = item.Id })">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="button" onclick="deleteNotification('@item.Id', event)">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+

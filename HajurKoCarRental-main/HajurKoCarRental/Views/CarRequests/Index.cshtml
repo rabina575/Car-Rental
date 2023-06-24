@@ -1,0 +1,293 @@
+﻿@using HajurKoCarRental.Utils
+@model IEnumerable<HajurKoCarRental.Models.CarRequest>
+
+@{
+    ViewData["Title"] = "Requests";
+}
+
+<style>
+    .rating {
+        white-space: nowrap;
+        unicode-bidi: bidi-override;
+        direction: rtl;
+        text-align: center;
+    }
+
+    .star {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        font-size: 26px;
+        background-size: 20px 20px;
+    }
+
+        .rating span {
+            position: relative;
+            width: 1.1em;
+        }
+
+            .rating span:before {
+                content: '\2605';
+                position: absolute;
+                color: #ccc;
+            }
+
+            .rating span:hover:before,
+            .rating span:hover ~ span:before,
+            .rating span.selected:before,
+            .rating span.selected ~ span:before {
+                color: #ffbf00;
+            }
+
+            .rating span.selected:before,
+            .rating span.selected ~ span:before {
+                content: '\2605';
+            }
+
+</style>
+
+<script>
+    function setRating(element) {
+        var rating = element.dataset.value;
+        var id = element.parentElement.dataset.id;
+        var url = "/CarRequests/GiveRating?id=" + id + "&rating=" + rating;
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function () {
+                // Reload the page to see the updated rating
+                location.reload();
+            },
+            error: function () {
+                alert("Failed to update rating.");
+            }
+        });
+    }
+</script>
+
+
+<h1>Total Requests</h1>
+
+<div class="filters my-3">
+    <div class="form-row" style="display: flex; justify-content: flex-end; align-items: center">
+        @{
+            if (User.IsInRole("Customer"))
+            {
+                <div class="col-md-2 me-1" hidden>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search by customer">
+                </div>
+            }
+            else
+            {
+                <div class="col-md-2 me-1">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search by customer">
+                </div>
+            }
+        }
+
+        <div class="col-md-2 me-1">
+            <input type="text" class="form-control" id="fromDate" placeholder="From date (Requested)">
+        </div>
+        <div class="col-md-2 me-1">
+            <input type="text" class="form-control" id="toDate" placeholder="To date (Requested)">
+        </div>
+        <div class="col-md-2 me-1">
+            <select class="form-control" id="statusFilter">
+                <option value="">All STATUS</option>
+                <option value="APPROVED">APPROVED</option>
+                <option value="CANCELLED">CANCELLED</option>
+                <option value="REJECTED">REJECTED</option>
+                <option value="PENDING">PENDING</option>
+            </select>
+        </div>
+        <div class="col-md-2 me-1">
+            <button class="btn btn-primary mr-2" id="applyFilters">Apply</button>
+            <button class="btn btn-light" id="clearFilters">Clear</button>
+        </div>
+    </div>
+</div>
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <!-- Add table headers here -->
+            <th>
+                @Html.DisplayNameFor(model => model.Car)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerUser)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.duration)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApprovalUser)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.requestedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.returnedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.totalAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.isDamaged)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.rating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.isPaid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.status)
+            </th>
+            <th>Action</th>
+            <th>Return</th>
+        </tr>
+    </thead>
+    <tbody id="requestTableBody">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <!-- Add table row data here -->
+                <td>
+                    @Html.DisplayFor(modelItem => item.Car.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerUser.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.duration)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ApprovalUser.Name)
+                </td>
+                <td>
+                    @item.requestedDate.ToString("d MMM, yyyy")
+                </td>
+                <td>
+                    @(item.returnedDate.HasValue ? item.returnedDate.Value.ToString("dd MMM, yyyy") : "")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.totalAmount)
+                </td>
+                <td>
+                    @(item.isDamaged ? "Yes" : "No")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.rating)
+                </td>
+                <td>
+                    @(item.isPaid ? "Yes" : "No")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.status)
+                </td>
+                @{
+                    if (User.IsInRole("Staff") || User.IsInRole("Admin"))
+                    {
+                        <td>
+                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
+                        </td>
+
+                        if (item.status == Status.APPROVED && item.returnedDate==null)
+                        {
+                            <td>
+                                <a asp-action="ReturnCar" asp-route-id="@item.Id">Car Returned</a>
+                            </td>
+                        }
+                    }
+
+                    if (item.returnedDate != null && item.rating == null && User.IsInRole("Customer"))
+                        {
+                        <td>
+                            <div class="rating" data-id="@item.Id">
+                                <span class="star" data-value="5" onclick="setRating(this)"></span>
+                                <span class="star" data-value="4" onclick="setRating(this)"></span>
+                                <span class="star" data-value="3" onclick="setRating(this)"></span>
+                                <span class="star" data-value="2" onclick="setRating(this)"></span>
+                                <span class="star" data-value="1" onclick="setRating(this)"></span>
+                            </div>
+                        </td>
+                    }
+
+                    if (item.returnedDate == null) // && Utils.role.Contains(UserRoles.Customer))  admin or staff can also be the customer
+                    {
+                        if(item.status == Status.APPROVED)
+                        {
+                            <td>
+                                <a asp-action="ReportDamage" asp-route-id="@item.Id" asp-route-approvedBy="@item.approvedBy">Report Damage</a>
+                            </td>
+                        }
+                        if (item.status == Status.PENDING || item.status == Status.APPROVED && item.requestedDate> DateTime.Now)
+                        {
+                            <td>
+                                <a asp-action="CancelRequest" asp-route-id="@item.Id">Cancel Request</a>
+                            </td>
+                        }
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Date picker
+            $("#fromDate, #toDate").datepicker({
+                dateFormat: "dd MM, yy"
+            });
+
+            // Apply filter button click
+            $("#applyFilters").on("click", function () {
+                applyFilters();
+            });
+
+            // Clear filter button click
+            // Clear filter button click
+            $("#clearFilters").on("click", function () {
+                $("#searchInput").val("");
+                $("#fromDate").val("");
+                $("#toDate").val("");
+                $("#statusFilter").val(""); // Add this line to reset the status dropdown
+                applyFilters();
+            });
+
+
+            function applyFilters() {
+                const searchText = $("#searchInput").val().toLowerCase();
+                const fromDate = $("#fromDate").datepicker("getDate");
+                const toDate = $("#toDate").datepicker("getDate");
+                const statusFilter = $("#statusFilter").val();
+
+                $("#requestTableBody tr").each(function () {
+                    const customerName = $(this).find("td:eq(1)").text().toLowerCase();
+
+                    const requestedDate = new Date($(this).find("td:eq(3)").text());
+                    const status = $(this).find("td:eq(9)").text().trim();
+
+                    const customerMatch = customerName.indexOf(searchText) > -1; 
+                    const fromDateMatch = !fromDate || requestedDate >= fromDate;
+                    const toDateMatch = !toDate || requestedDate <= toDate;
+                    const statusMatch = !statusFilter || status === statusFilter;
+
+                    if (customerMatch && fromDateMatch && toDateMatch && statusMatch) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+
+        });
+    </script>
+}
+

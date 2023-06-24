@@ -1,0 +1,38 @@
+﻿@model IEnumerable<HajurKoCarRental.Models.Car>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div style="display: flex; align-items: center; justify-content: center;" class="mb-3">
+    <img src="./Images/namaste.jpg" style="width: 100px; height: auto;">
+    <h3 style="margin: 0 20px;">Welcome to "Hajur Ko Car Rental"</h3>
+    <img src="./Images/namaste.jpg" style="width: 100px; height: auto;">
+</div>
+
+<div class="team-quotation mb-3">
+    <img src="./Images/homepage-image1.jpg" style="width: 700px; height: auto; position: relative; bottom: 150px; right: 150px;" />
+    <img src="./Images/quotation.png" style="width: 500px; height: auto;" />
+</div>
+
+<div class="mb-2" style="color: #555555">
+    <h3>
+        Our Car Inventory
+    </h3>
+</div>
+
+<div class="container mx-auto">
+    <div class="row car-card-container mx-auto">
+        @foreach (var item in Model)
+        {
+            <div class="car-card">
+                <div class="card mb-4">
+                    <img class="card-img-top" src="@item.Image" alt="Car image" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
+                        <p class="card-text">Rate: <i class="bi bi-currency-rupee"></i> @Html.DisplayFor(modelItem => item.Rate)</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

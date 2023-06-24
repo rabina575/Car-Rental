@@ -1,0 +1,52 @@
+﻿@model HajurKoCarRental.Models.Car
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+<h4>Edit Car</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-floating mb-3">
+                <input asp-for="Name" class="form-control" id="name" />
+                <label asp-for="Name" for="name"></label>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Rate" class="form-control" id="rate" />
+                <label asp-for="Rate" for="rate"></label>
+                <span asp-validation-for="Rate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="fileInput">Choose file (only .png, .jpg or .jpeg)</label>
+                <input type="file" name="fileInput" id="fileInput" class="form-control-file" accept=".png,.jpg, .jpeg">
+            </div>
+
+            <div class="form-floating mb-3" hidden>
+                <input asp-for="CreatedAt" class="form-control" id="createdAt" />
+                <label asp-for="CreatedAt" for="createdAt"></label>
+                <span asp-validation-for="CreatedAt" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary me-2" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

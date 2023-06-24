@@ -1,0 +1,40 @@
+﻿@model HajurKoCarRental.Models.Car
+
+@{
+    ViewData["Title"] = "Car Detail";
+}
+
+<div class="container">
+    <h4 class="text-center">@ViewData["Title"]</h4>
+
+    <div class="row justify-content-center mb-3">
+        <div class="col-md-6">
+            <img src="@Model.Image" class="car-detail-image rounded mx-auto d-block" alt="@Model.Name">
+        </div>
+    </div>
+
+    <div class="row justify-content-center" style="margin-left: 5%">
+        <div class="col-md-6">
+            <dl class="row">
+                <div class="col-2"></div>
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Name)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.Name)</dd>
+
+                <div class="col-2"></div>
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Rate)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.Rate)</dd>
+
+                <div class="col-2"></div>
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.CreatedAt)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.CreatedAt)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary me-1">Edit</a>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,117 @@
+﻿@model HajurKoCarRental.Models.CarRequest
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<!-- Add custom styles -->
+<style>
+    .detail-card {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    }
+
+        .detail-card h2 {
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+</style>
+
+<!-- Wrap content in a Bootstrap container -->
+<div class="container mt-5">
+    <div class="detail-card">
+        <h2>Car Request Details</h2>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Car)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Car.Name)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.CustomerUser)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.CustomerUser.Name)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.duration)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.duration)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.ApprovalUser)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.ApprovalUser.Name)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.requestedDate)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.requestedDate)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.returnedDate)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.returnedDate)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.totalDiscount)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.totalDiscount)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.totalAmount)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.totalAmount)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.isDamaged)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.isDamaged)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.rating)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.rating)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.isPaid)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.isPaid)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.status)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.status)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.CreatedAt)
+            </dd>
+        </dl>
+    </div>
+    <div class="mt-3">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        @if (Model.status == Status.PENDING)
+        {
+            <a asp-action="ChangeStatus" asp-route-id="@Model.Id" asp-route-status="APPROVED" class="btn btn-success">Approve</a>
+            <a asp-action="ChangeStatus" asp-route-id="@Model.Id" asp-route-status="REJECTED" class="btn btn-danger">Reject</a>
+        }
+    </div>
+</div>

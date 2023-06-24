@@ -1,0 +1,178 @@
+﻿body {
+    font-family: 'Lato', sans-serif;
+}
+
+h1 {
+    color: #555555;
+}
+
+.authentication-form-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.authentication-form-container section {
+    width:100%;
+}
+
+.authentication-form-container form {
+    width: 100%;
+}
+
+.authentication-form-container .form-floating {
+    margin: 10px 0;
+}
+
+.login-page-container {
+    background-image: url("../Images/login.jpg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 91% 0%;
+}
+
+.register-page-container {
+    background-image: url("../Images/register.jpg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 91% 0%;
+}
+
+.create-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px; 
+}
+
+.car-card-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.car-card {
+    width: 410px;
+    margin: 0 6px;
+}
+
+.card-button-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.card-button-container a{
+    width:20%
+}
+
+.car-detail-image {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+}
+
+.create-car-container {
+    background-image: url("../Images/create-car.jpg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 90% 52px;
+}
+
+.team-quotation {
+    display:flex;
+    justify-content:flex-end;
+    margin-top: 150px;
+}
+
+.offer-card {
+    background-color: #f9f9f9;
+    border: 2px dashed #666;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+    .offer-card .card-title {
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #555;
+        font-size: 1.25rem;
+    }
+
+    .offer-card .card-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .offer-card .card-text {
+        font-size: 0.85rem;
+    }
+
+.stylish-link {
+    display: inline-block;
+    padding: 0px 5px;
+    color: #4285f4;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    text-decoration: underline;
+}
+
+    .stylish-link:hover {
+        color: green;
+    }
+
+.create-user-container {
+    background-image: url("../Images/add-user.jpg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 100% 52px;
+}
+
+.chart-data-container{
+    display: flex;
+    align-items: center;
+}
+
+.min-max-data-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-box {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+#notification-list-container {
+    position: fixed;
+    z-index: 999;
+    display: none;
+    top: 60px;
+    left: 550px;
+}
+
+.swipe-out {
+    animation: swipe-out 0.5s forwards;
+}
+
+@keyframes swipe-out {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+
+
+

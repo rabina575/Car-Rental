@@ -1,0 +1,35 @@
+﻿@model HajurKoCarRental.Models.Car
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h3 class="text-center">Are you sure you want to delete this?</h3>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <img src="@Model.Image" alt="@Model.Name" class="img-fluid rounded mx-auto d-block mb-4" style="max-height: 250px;">
+
+            <dl class="row">
+                <div class="col-3"></div>
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Name)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.Name)</dd>
+
+                <div class="col-3"></div>
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Rate)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.Rate)</dd>
+
+
+                <div class="col-3"></div>
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.CreatedAt)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.CreatedAt)</dd>
+            </dl>
+
+            <form asp-action="Delete" class="text-center">
+                <input type="hidden" asp-for="Id" />
+                <input type="submit" value="Delete" class="btn btn-danger me-1" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </form>
+        </div>
+    </div>
+</div>
